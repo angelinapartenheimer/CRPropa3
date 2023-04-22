@@ -899,6 +899,45 @@ void SourceEmissionMap::setDescription() {
 void SourceEmissionMap::setEmissionMap(EmissionMap *emissionMap) {
 	this->emissionMap = emissionMap;
 }
+	
+
+
+SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double aperture, double magneticField, double coherenceLength, double distance) :
+	aperture(aperture), magneticField(magneticField), coherenceLength(coherenceLength), distance(distance) {
+	setDirection(direction);
+	setDescription();
+	
+}
+
+void SourceEmissionAngle::prepareParticle(ParticleState& particle) const {
+
+	double energy = particle.getEnergy();
+	double angle = 0.025*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(energy/100.,-1)
+
+	Random &random = Random::instance();
+	Vector3d axis = meanDirection.cross(random.randVector());
+	Vector3d v = meanDirection;
+	v.getRotated(axis, angle);
+
+	particle.setDirection(v);
+}
+
+void SourceEmissionAngle::setDirection(Vector3d dir) {
+	if (dir.getR() == 0) {
+		throw std::runtime_error("SourceEmissionAngle: The direction vector was a null vector.");
+	} else {
+		direction = dir.getUnitVector();
+	}
+}
+
+void SourceEmissionAngle::setDescription() {
+	std::stringstream ss;
+	ss << "SourceEmissionAngle: Jetted emission in ";
+	ss << "direction = " << direction << " with ";
+	ss << "half-opening angle = " << aperture << " rad\n";
+	description = ss.str();
+}
+
 
 // ----------------------------------------------------------------------------
 SourceEmissionCone::SourceEmissionCone(Vector3d direction, double aperture) :

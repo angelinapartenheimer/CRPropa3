@@ -621,6 +621,27 @@ public:
 	void setDescription();
 };
 
+/**
+ @class SourceEmissionAngle
+ @brief Energy-based emission within a cone
+ */
+class SourceEmissionAngle: public SourceFeature {
+	Vector3d direction;
+	double aperture;
+	double coherenceLength;
+	double magneticField;
+	double distance;
+public:
+	/** Constructor
+	 @param direction		vector corresponding to the cone axis 
+	 @param aperture		opening angle of the cone
+	 */
+	SourceEmissionAngle(Vector3d direction, double aperture, double coherenceLength, double magneticField, double distance);
+	void prepareParticle(ParticleState &particle) const;
+	void setDirection(Vector3d direction);
+	void setDescription();
+};
+
 
 /**
  @class SourceEmissionCone
