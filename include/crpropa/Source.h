@@ -636,7 +636,7 @@ public:
 	 @param direction		vector corresponding to the cone axis 
 	 @param aperture		opening angle of the cone
 	 */
-	SourceEmissionAngle(Vector3d direction, double aperture, double coherenceLength, double magneticField, double distance);
+	SourceEmissionAngle(Vector3d direction, double coherenceLength, double magneticField, double distance);
 	void prepareParticle(ParticleState &particle) const;
 	void setDirection(Vector3d direction);
 	void setDescription();

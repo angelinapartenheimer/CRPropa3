@@ -902,8 +902,8 @@ void SourceEmissionMap::setEmissionMap(EmissionMap *emissionMap) {
 	
 
 
-SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double aperture, double magneticField, double coherenceLength, double distance) :
-	aperture(aperture), magneticField(magneticField), coherenceLength(coherenceLength), distance(distance) {
+SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double magneticField, double coherenceLength, double distance) :
+	magneticField(magneticField), coherenceLength(coherenceLength), distance(distance) {
 	setDirection(direction);
 	setDescription();
 	
@@ -912,11 +912,11 @@ SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double aperture, do
 void SourceEmissionAngle::prepareParticle(ParticleState& particle) const {
 
 	double energy = particle.getEnergy();
-	double angle = 0.025*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(energy/100.,-1)
+	double angle = 0.025*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(energy/100.,-1);
 
 	Random &random = Random::instance();
-	Vector3d axis = meanDirection.cross(random.randVector());
-	Vector3d v = meanDirection;
+	Vector3d axis = direction.cross(random.randVector());
+	Vector3d v = direction;
 	v.getRotated(axis, angle);
 
 	particle.setDirection(v);
@@ -934,7 +934,9 @@ void SourceEmissionAngle::setDescription() {
 	std::stringstream ss;
 	ss << "SourceEmissionAngle: Jetted emission in ";
 	ss << "direction = " << direction << " with ";
-	ss << "half-opening angle = " << aperture << " rad\n";
+	ss << "magnetic field = " << magneticField;
+	ss << ", coherence length = " << coherenceLength;
+	ss << ", distance = " << distance << "\n";
 	description = ss.str();
 }
 
