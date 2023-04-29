@@ -911,15 +911,13 @@ SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double magneticFiel
 
 void SourceEmissionAngle::prepareParticle(ParticleState& particle) const {
 
-	double energy = particle.getEnergy();
-	double angle = 0.025*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(energy/100.,-1);
+	double rigidity = particle.getRigidity();
+	double angle = 0.025*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(rigidity/100.,-1);
 
 	Random &random = Random::instance();
 	Vector3d axis = direction.cross(random.randVector());
-	Vector3d v = direction;
-	v.getRotated(axis, angle);
 
-	particle.setDirection(v);
+	particle.setDirection(direction.getRotated(axis, angle));
 }
 
 void SourceEmissionAngle::setDirection(Vector3d dir) {
