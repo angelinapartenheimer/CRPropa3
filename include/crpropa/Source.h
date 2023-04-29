@@ -634,7 +634,7 @@ public:
 	/** Constructor
 	 @param direction		vector corresponding to the cone axis 
 	 */
-	SourceEmissionAngle(Vector3d direction, double coherenceLength, double magneticField, double distance);
+	SourceEmissionAngle(Vector3d direction, double magneticField, double coherenceLength, double distance);
 	void prepareParticle(ParticleState &particle) const;
 	void setDirection(Vector3d direction);
 	void setDescription();
