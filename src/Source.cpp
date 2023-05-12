@@ -881,6 +881,47 @@ void SourceDirection::setDescription() {
 }
 
 // ----------------------------------------------------------------------------
+
+SourceMagneticHorizon::SourceMagneticHorizon(double magneticField, double coherenceLength, double distance) :
+	magneticField(magneticField), coherenceLength(coherenceLength), distance(distance) {
+	setDescription();
+}
+
+
+double SourceMagneticHorizon::getTau(ParticleState& particle) const {
+
+	double rigidity = particle.getRigidity();
+        Vector3d position = particle.getPosition();
+	double angle = 0.0004*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(rigidity/1e20, -1);
+        double tau = distance*pow(angle, 2)/4;
+
+        return tau;
+}
+
+void SourceMagneticHorizon::prepareParticle(ParticleState& particle) const {
+
+        double tau = getTau(particle);
+        double scaling = distance/tau;
+        Vector3d new_position = particle.getPosition()*scaling;
+        particle.setPosition(new_position); 
+
+}
+
+void SourceMagneticHorizon::prepareCandidate(Candidate &candidate) const {
+        
+        double tau = getTau(candidate.source);
+        if (tau > 4300) {
+                candidate.setActive(false);
+        }
+}
+
+void SourceMagneticHorizon::setDescription() {
+	std::stringstream ss;
+	ss <<  "SourceMagneticHorizon:" << "\n";
+	description = ss.str();
+}
+
+// ----------------------------------------------------------------------------
 SourceEmissionMap::SourceEmissionMap(EmissionMap *emissionMap) : emissionMap(emissionMap) {
 	setDescription();
 }
@@ -911,9 +952,9 @@ SourceEmissionAngle::SourceEmissionAngle(Vector3d direction, double magneticFiel
 
 void SourceEmissionAngle::prepareParticle(ParticleState& particle) const {
 
+        
 	double rigidity = particle.getRigidity();
 	double angle = 0.0004*pow(distance/coherenceLength, 0.5)*(coherenceLength/10.)*(magneticField/(1e-11))*pow(rigidity/1e20, -1);
-        
         
 	Random &random = Random::instance();
 	Vector3d axis = direction.cross(random.randVector());

@@ -606,6 +606,24 @@ public:
 
 
 /**
+ @class SourceMagneticHorizon
+ @brief
+ */
+class SourceMagneticHorizon: public SourceFeature {
+         double magneticField;
+         double coherenceLength;
+         double distance;
+public:
+	/** Constructor
+	 */
+	SourceMagneticHorizon(double magneticField, double coherenceLength, double distance);
+        double getTau(ParticleState &particle) const;
+	void prepareParticle(ParticleState &particle) const;
+        void prepareCandidate(Candidate &candidate) const;
+	void setDescription();
+};
+
+/**
  @class SourceEmissionMap
  @brief Deactivate Candidate if it has zero probability in provided EmissionMap
  */
